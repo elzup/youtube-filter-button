@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Red rounded square background -->
+  <rect x="4" y="4" width="120" height="120" rx="24" fill="#FF0000"/>
+  <!-- White funnel/filter icon -->
+  <path d="M32 36h64L72 68v20l-16 8V68L32 36z" fill="#FFFFFF"/>
+</svg>
