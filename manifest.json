@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Filter Button",
+  "version": "1.0.0",
+  "description": "Add quick filter buttons to YouTube search results",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

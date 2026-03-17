@@ -1,0 +1,36 @@
+#ytfb-container {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.ytfb-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--yt-spec-text-primary, #fff);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-family: "Roboto", "Arial", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ytfb-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+html[dark] .ytfb-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+html:not([dark]) .ytfb-btn {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--yt-spec-text-primary, #0f0f0f);
+}
+
+html:not([dark]) .ytfb-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
