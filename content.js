@@ -1,11 +1,24 @@
-const ALL_FILTERS = [
-  { id: "today", label: "今日", sp: "EgIIAQ%3D%3D" },
-  { id: "this_week", label: "今週", sp: "EgIIAg%3D%3D" },
-  { id: "this_month", label: "今月", sp: "EgIIAw%3D%3D" },
-  { id: "this_year", label: "今年", sp: "EgIIBA%3D%3D" },
+const FILTER_GROUPS = [
+  {
+    label: "期間",
+    filters: [
+      { id: "hour", label: "1時間以内", sp: "EgIIAQ%3D%3D" },
+      { id: "today", label: "今日", sp: "EgIIAg%3D%3D" },
+      { id: "this_week", label: "今週", sp: "EgIIAw%3D%3D" },
+      { id: "this_month", label: "今月", sp: "EgIIBA%3D%3D" },
+      { id: "this_year", label: "今年", sp: "EgIIBQ%3D%3D" },
+    ],
+  },
+  {
+    label: "並び替え",
+    filters: [
+      { id: "sort_relevance", label: "関連度順", sp: "CAASAhAB" },
+      { id: "sort_date", label: "アップロード日", sp: "CAI%3D" },
+      { id: "sort_views", label: "再生回数順", sp: "CAMSAhAB" },
+      { id: "sort_rating", label: "評価順", sp: "CAESAhAB" },
+    ],
+  },
 ];
-
-const DEFAULT_FILTER_IDS = ["today", "this_week"];
 
 function buildFilterUrl(sp) {
   const url = new URL(window.location.href);
@@ -13,24 +26,36 @@ function buildFilterUrl(sp) {
   return url.toString();
 }
 
-function createFilterButtons(filters) {
+function createFilterButtons() {
   if (document.getElementById("ytfb-container")) return;
 
   const container = document.createElement("div");
   container.id = "ytfb-container";
 
-  for (const filter of filters) {
-    const btn = document.createElement("a");
-    btn.className = "ytfb-btn";
-    btn.textContent = filter.label;
-    btn.href = buildFilterUrl(filter.sp);
-    container.appendChild(btn);
+  for (const group of FILTER_GROUPS) {
+    const groupEl = document.createElement("div");
+    groupEl.className = "ytfb-group";
+
+    const labelEl = document.createElement("span");
+    labelEl.className = "ytfb-group-label";
+    labelEl.textContent = group.label;
+    groupEl.appendChild(labelEl);
+
+    for (const filter of group.filters) {
+      const btn = document.createElement("a");
+      btn.className = "ytfb-btn";
+      btn.textContent = filter.label;
+      btn.href = buildFilterUrl(filter.sp);
+      groupEl.appendChild(btn);
+    }
+
+    container.appendChild(groupEl);
   }
 
   return container;
 }
 
-function insertButtons(filters) {
+function insertButtons() {
   if (!window.location.pathname.startsWith("/results")) return;
   if (document.getElementById("ytfb-container")) return;
 
@@ -38,7 +63,7 @@ function insertButtons(filters) {
     "ytd-search-header-renderer, #chip-bar"
   );
   if (chipBar) {
-    const container = createFilterButtons(filters);
+    const container = createFilterButtons();
     if (container) {
       chipBar.parentElement.insertBefore(container, chipBar.nextSibling);
     }
@@ -47,27 +72,17 @@ function insertButtons(filters) {
 
   const header = document.querySelector("ytd-section-list-renderer");
   if (header) {
-    const container = createFilterButtons(filters);
+    const container = createFilterButtons();
     if (container) {
       header.parentElement.insertBefore(container, header);
     }
   }
 }
 
-function getEnabledFilters(filterIds) {
-  return ALL_FILTERS.filter((f) => filterIds.includes(f.id));
-}
-
 function init() {
-  chrome.storage.sync.get({ filterIds: DEFAULT_FILTER_IDS }, (result) => {
-    const filters = getEnabledFilters(result.filterIds);
-
-    const tryInsert = () => insertButtons(filters);
-
-    const observer = new MutationObserver(tryInsert);
-    observer.observe(document.body, { childList: true, subtree: true });
-    tryInsert();
-  });
+  const observer = new MutationObserver(insertButtons);
+  observer.observe(document.body, { childList: true, subtree: true });
+  insertButtons();
 }
 
 init();
