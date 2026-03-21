@@ -2,7 +2,7 @@ const FILTER_GROUPS = [
   {
     label: "期間",
     filters: [
-      { id: "hour", label: "1時間以内", sp: "EgIIAQ%3D%3D" },
+      { id: "hour", label: "1時間以内", sp: "EgIIAQ%3D%3D", deprecated: true },
       { id: "today", label: "今日", sp: "EgIIAg%3D%3D" },
       { id: "this_week", label: "今週", sp: "EgIIAw%3D%3D" },
       { id: "this_month", label: "今月", sp: "EgIIBA%3D%3D" },
@@ -13,9 +13,8 @@ const FILTER_GROUPS = [
     label: "並び替え",
     filters: [
       { id: "sort_relevance", label: "関連度順", sp: "CAASAhAB" },
-      { id: "sort_date", label: "アップロード日", sp: "CAI%3D" },
-      { id: "sort_views", label: "再生回数順", sp: "CAMSAhAB" },
-      { id: "sort_rating", label: "評価順", sp: "CAESAhAB" },
+      { id: "sort_views", label: "人気順", sp: "CAMSAhAB" },
+      { id: "sort_rating", label: "評価順", sp: "CAESAhAB", deprecated: true },
     ],
   },
 ];
@@ -43,8 +42,15 @@ function createFilterButtons() {
 
     for (const filter of group.filters) {
       const btn = document.createElement("a");
-      btn.className = "ytfb-btn";
-      btn.textContent = filter.label;
+      btn.className = filter.deprecated
+        ? "ytfb-btn ytfb-btn--deprecated"
+        : "ytfb-btn";
+      btn.textContent = filter.deprecated
+        ? `[実験] ${filter.label}`
+        : filter.label;
+      if (filter.deprecated) {
+        btn.title = "YouTube UIから削除済み。動作しない可能性があります";
+      }
       btn.href = buildFilterUrl(filter.sp);
       groupEl.appendChild(btn);
     }
